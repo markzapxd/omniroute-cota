@@ -150,16 +150,25 @@ gdbus call --session --dest io.github.omniquota.Service \
 
 ## Atualizar
 
-Pare o serviço, atualize o código e execute novamente a instalação do seu desktop:
+Atualize o código e reinstale com recarregamento explícito:
 
 ```bash
-systemctl --user stop omniquota.service
-# Atualize os arquivos do projeto antes de reinstalar.
-bash scripts/install-user.sh --service --gnome  # ou --kde
-systemctl --user start omniquota.service
+git pull
+# No NixOS, entre em nix-shell primeiro.
+bash scripts/install-user.sh --service --gnome --reload
+# Ou, no KDE:
+bash scripts/install-user.sh --service --kde --reload
 ```
 
-Configuração e chaveiro são preservados. GNOME e Plasma podem manter componentes em cache: um novo login na sessão carrega a interface atualizada. Não reinicie o desktop enquanto houver trabalho não salvo.
+Para somente recarregar o que já está instalado:
+
+```bash
+bash scripts/reload-user.sh
+```
+
+O script reinicia o serviço e identifica a sessão pelo `XDG_CURRENT_DESKTOP`. No GNOME, desativa/ativa a extensão; no KDE, reinicia apenas o Plasma Shell (a barra desaparece por alguns segundos, sem fechar aplicativos). Sem `--reload`, o instalador não reinicia a interface. Execute na sessão do desktop desejado, não em SSH nem na sessão KDE para recarregar um GNOME aninhado.
+
+Configuração e chaveiro são preservados. **No GNOME, módulos JavaScript podem continuar em cache mesmo após reativar:** se a interface não mudar, saia e entre novamente na sessão. O script não força logout nem reinicia o computador.
 
 ## Diagnóstico
 

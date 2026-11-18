@@ -99,6 +99,8 @@ export default class OmniRoute Cota extends Extension {
                 }
             }
         }
+        if (typeof state.bankedResetCredits === 'number')
+            info(`Resets disponíveis: ${state.bankedResetCredits}`);
         if (state.stale) info('Dados desatualizados');
         if (!(state.windows ?? []).length) info(state.message || 'Entre para consultar sua cota.');
         this._button.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());

@@ -3,6 +3,20 @@ from omniquota.engine import Engine
 from omniquota.client import ApiError
 
 class EngineTests(unittest.TestCase):
+    def test_reset_credits(self):
+        for value in (0, 2, 3.0):
+            e = Engine(); e.success(e.begin(), {'bankedResetCredits': value})
+            self.assertEqual(e.state['bankedResetCredits'], value)
+    def test_invalid_or_missing_reset_credits(self):
+        for value in (None, -1, True, '2', 1.5, float('nan'), float('inf')):
+            e = Engine(); e.success(e.begin(), {'bankedResetCredits': value})
+            self.assertIsNone(e.state['bankedResetCredits'])
+    def test_reset_credits_removed_when_missing(self):
+        e = Engine(); e.success(e.begin(), {'bankedResetCredits': 2})
+        e.success(e.begin(), {})
+        self.assertIsNone(e.state['bankedResetCredits'])
+        e.reset()
+        self.assertIsNone(e.state['bankedResetCredits'])
     def test_no_overlapping_requests(self):
         e = Engine()
         self.assertIsNotNone(e.begin())

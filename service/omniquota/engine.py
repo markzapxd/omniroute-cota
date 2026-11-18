@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from .quota import normalize_usage, panel_percent
+from .quota import normalize_usage, panel_percent, number
 from .client import ApiError
 
 class Engine:
@@ -13,7 +13,7 @@ class Engine:
         self.busy = False
         self.delay = 60
         self.state = {'version':1,'status':'signed-out','windows':[], 'remainingPercent':None,
-                      'updatedAt':None,'message':'Entre para consultar a cota.','stale':False}
+                      'bankedResetCredits':None,'updatedAt':None,'message':'Entre para consultar a cota.','stale':False}
 
     def begin(self):
         if self.busy: return None
@@ -23,7 +23,9 @@ class Engine:
     def success(self,ticket,payload):
         if ticket != self.generation: return
         windows = normalize_usage(payload)
-        self.state.update(status='ready' if panel_percent(windows) is not None else 'unsupported',
+        credits = payload.get('bankedResetCredits')
+        credits = int(credits) if number(credits) and credits >= 0 and credits == int(credits) else None
+        self.state.update(bankedResetCredits=credits,status='ready' if panel_percent(windows) is not None else 'unsupported',
                           windows=windows,remainingPercent=panel_percent(windows),
                           updatedAt=datetime.now(timezone.utc).isoformat(),
                           stale=bool(payload.get('_stale')),

@@ -4,11 +4,11 @@ root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 data=${XDG_DATA_HOME:-$HOME/.local/share}
 config=${XDG_CONFIG_HOME:-$HOME/.config}
 bin=$HOME/.local/bin
-service=0; gnome=0; kde=0
+service=0; gnome=0; kde=0; reload=0
 if (($# == 0)); then printf 'Uso: bash scripts/install-user.sh --service [--gnome] [--kde]\n'; exit 0; fi
 for arg in "$@"; do
     case "$arg" in
-        --service) service=1;; --gnome) gnome=1;; --kde) kde=1;;
+        --service) service=1;; --gnome) gnome=1;; --kde) kde=1;; --reload) reload=1;;
         *) printf 'Opção desconhecida: %s\n' "$arg" >&2; exit 2;;
     esac
 done
@@ -57,4 +57,7 @@ if ((kde)); then
     cp -R "$root/kde/package/." "$data/plasma/plasmoids/io.github.omniquota/"
     cmake --install "$build" --prefix "$data/plasma/plasmoids/io.github.omniquota/bridge"
 fi
-printf 'Arquivos instalados. GNOME: habilite omniquota@local após novo login. KDE: adicione o widget OmniQuota.\n'
+printf 'Arquivos instalados. GNOME: habilite omniquota@local. KDE: adicione o widget OmniRoute Cota.\n'
+if ((reload)) && [[ ${OMNIQUOTA_NO_ACTIVATE:-0} != 1 ]]; then
+    bash "$root/scripts/reload-user.sh"
+fi
