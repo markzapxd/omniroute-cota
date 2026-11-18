@@ -1,0 +1,1 @@
+{"uuid": "omniquota@local", "name": "OmniRoute Cota", "description": "Cota restante do OmniRoute; requer o serviço local OmniRoute Cota.", "shell-version": ["45", "46", "47", "48", "49", "50"], "version": 1}

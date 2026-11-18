@@ -1,0 +1,12 @@
+build/
+__pycache__/
+*.py[cod]
+PROGRESS.md
+.superpowers/
+.env
+.env.*
+*.log
+*.png
+*.jpg
+*.core
+result

@@ -1,0 +1,12 @@
+<node>
+  <interface name="io.github.omniquota.Service">
+    <method name="GetState"><arg name="state" type="s" direction="out"/></method>
+    <method name="Refresh"/>
+    <method name="OpenSettings"/>
+    <method name="Logout"/>
+    <method name="Configure"><arg name="config" type="s" direction="in"/></method>
+    <method name="Login"><arg name="password" type="s" direction="in"/><arg name="remember" type="b" direction="in"/></method>
+    <method name="GetConfig"><arg name="config" type="s" direction="out"/></method>
+    <signal name="StateChanged"><arg name="state" type="s"/></signal>
+  </interface>
+</node>
