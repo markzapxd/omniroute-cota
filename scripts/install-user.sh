@@ -38,7 +38,12 @@ if ((service)); then
     printf '[D-BUS Service]\nName=io.github.omniquota.Service\nExec="%s/omniquota-service"\nSystemdService=omniquota.service\n' "$bin" > "$data/dbus-1/services/io.github.omniquota.Service.service"
     printf '[Unit]\nDescription=OmniQuota quota indicator service\n[Service]\nType=dbus\nBusName=io.github.omniquota.Service\nExecStart="%s/omniquota-service"\n' "$bin" > "$config/systemd/user/omniquota.service"
     printf '[Desktop Entry]\nType=Application\nName=OmniQuota Settings\nExec="%s/omniquota-settings"\nIcon=view-statistics\nCategories=Utility;\nTerminal=false\n' "$bin" > "$data/applications/io.github.omniquota.Settings.desktop"
-    if [[ ${OMNIQUOTA_NO_ACTIVATE:-0} != 1 ]]; then systemctl --user daemon-reload; fi
+    if [[ ${OMNIQUOTA_NO_ACTIVATE:-0} != 1 ]]; then
+        systemctl --user daemon-reload
+        systemctl --user restart omniquota.service
+        # Refresh activation directories after a first install in a live session.
+        gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus --method org.freedesktop.DBus.ReloadConfig >/dev/null 2>&1 || true
+    fi
 fi
 if ((gnome)); then
     mkdir -p "$data/gnome-shell/extensions/omniquota@local"

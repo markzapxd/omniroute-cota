@@ -22,7 +22,8 @@ void Bridge::update(const QString &raw) {
     emit stateChanged();
 }
 void Bridge::failure() {
-    m_state.insert("message", "Serviço indisponível ou ocupado. Verifique a instalação e tente novamente.");
+    m_state.insert("status", "error");
+    m_state.insert("message", "Operação falhou: serviço indisponível ou ocupado. Aguarde a consulta e tente novamente.");
     m_state.insert("stale", true);
     emit stateChanged();
 }
